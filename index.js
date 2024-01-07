@@ -62,8 +62,6 @@ const resolvers = {
     allPersons: async (root, args) => {
       const { data: personsFromRestAPI } = await axios.get('http://localhost:3000/persons')
 
-      console.log({ personsFromRestAPI })
-
       if (!args.phone) {
         return personsFromRestAPI
       }
