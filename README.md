@@ -8,8 +8,8 @@ after clone, run:
 
 ```sh
 pnpm i
-json-server db.json
-node index.js
+pnpm json-server
+pnpm dev
 ```
 
 ## Dependencies
