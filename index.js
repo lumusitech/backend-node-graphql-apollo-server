@@ -57,20 +57,19 @@ const typeDefs = gql`
 `
 
 const resolvers = {
+  // TODO: Implement resolvers using mongoose
   Query: {
     personsCount: () => persons.length,
     allPersons: async (root, args) => {
-      const { data: personsFromRestAPI } = await axios.get('http://localhost:3000/persons')
-
       if (!args.phone) {
-        return personsFromRestAPI
+        return persons
       }
 
       const byPhone = args.phone === 'YES' ? p => p.phone : p => !p.phone
 
-      return personsFromRestAPI.filter(byPhone)
+      return persons.filter(byPhone)
     },
-    findPerson: (root, args) => personsFromRestAPI.find(person => person.name === args.name),
+    findPerson: async (root, args) => persons.find(person => person.name === args.name),
   },
 
   Person: {
