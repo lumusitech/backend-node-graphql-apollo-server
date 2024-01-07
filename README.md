@@ -12,6 +12,8 @@ pnpm json-server
 pnpm dev
 ```
 
+Then, you can use playground of Apollo server to test at [http://localhost:4000](http://localhost:4000)
+
 ## Dependencies
 
 - json-server: Install this library first to run the mock server
