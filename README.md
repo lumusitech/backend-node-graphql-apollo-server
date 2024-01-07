@@ -18,3 +18,4 @@ pnpm dev
 - apollo-server
 - graphql
 - uuid
+- axios
