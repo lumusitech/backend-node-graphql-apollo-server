@@ -1,5 +1,6 @@
 import { ApolloServer, UserInputError, gql } from 'apollo-server'
 import { v4 as uuidv4 } from 'uuid'
+
 export const persons = [
   {
     name: 'John Doe',
@@ -25,6 +26,11 @@ export const persons = [
 ]
 
 const typeDefs = gql`
+  enum YesNo {
+    YES
+    NO
+  }
+
   type Address {
     street: String!
     city: String!
@@ -39,19 +45,28 @@ const typeDefs = gql`
 
   type Query {
     personsCount: Int!
-    allPersons: [Person]!
+    allPersons(phone: YesNo): [Person]!
     findPerson(name: String!): Person
   }
 
   type Mutation {
     addPerson(name: String!, phone: String, street: String!, city: String!): Person
+    editNumber(name: String!, phone: String!): Person
   }
 `
 
 const resolvers = {
   Query: {
     personsCount: () => persons.length,
-    allPersons: () => persons,
+    allPersons: (root, args) => {
+      if (!args.phone) {
+        return persons
+      }
+
+      const byPhone = args.phone === 'YES' ? p => p.phone : p => !p.phone
+
+      return persons.filter(byPhone)
+    },
     findPerson: (root, args) => persons.find(person => person.name === args.name),
   },
 
@@ -75,6 +90,18 @@ const resolvers = {
       }
       persons.push(person)
       return person
+    },
+    editNumber: (root, args) => {
+      const personIndex = persons.findIndex(person => person.name === args.name)
+      if (personIndex === -1) return null
+
+      const person = persons[personIndex]
+
+      const updatedPerson = { ...person, phone: args.phone }
+
+      persons[personIndex] = updatedPerson
+
+      return updatedPerson
     },
   },
 }
