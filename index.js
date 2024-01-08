@@ -1,6 +1,6 @@
 import { ApolloServer, UserInputError, gql } from 'apollo-server'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
+import './db.js'
 
 export const persons = [
   {
