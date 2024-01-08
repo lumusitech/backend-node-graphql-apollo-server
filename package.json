@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node index.js",
+    "dev": "nodemon index.js",
     "json-server": "json-server --watch db.json"
   },
   "keywords": [],
@@ -20,5 +20,8 @@
     "mongoose": "8.0.3",
     "mongoose-unique-validator": "4.0.0",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }

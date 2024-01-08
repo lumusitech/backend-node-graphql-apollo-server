@@ -22,3 +22,4 @@ Then, you can use playground of Apollo server to test at [http://localhost:4000]
 - graphql
 - monggose
 - jsonwebtoken
+- nodemon
