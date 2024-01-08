@@ -4,7 +4,7 @@ This is a simple example about graphql and apollo server with node and mongoose.
 
 NOTE: Refactor index.js using any architecture.
 
-NOTE: Edit .env file with MONGO_DB_URI environment variable.
+NOTE: Edit .env file with MONGO_DB_URI and JWT_SECRET environment variables.
 
 after clone, run:
 
@@ -21,3 +21,4 @@ Then, you can use playground of Apollo server to test at [http://localhost:4000]
 - apollo-server
 - graphql
 - monggose
+- jsonwebtoken
