@@ -1,8 +1,10 @@
 # Grphql - Node - CRUD
 
-This is a simple example about graphql and apollo server with node.
+This is a simple example about graphql and apollo server with node and mongoose.
 
 NOTE: Refactor index.js using any architecture.
+
+NOTE: Edit .env file with MONGO_DB_URI environment variable.
 
 after clone, run:
 
@@ -16,8 +18,6 @@ Then, you can use playground of Apollo server to test at [http://localhost:4000]
 
 ## Dependencies
 
-- json-server: Install this library first to run the mock server
 - apollo-server
 - graphql
-- uuid
-- axios
+- monggose

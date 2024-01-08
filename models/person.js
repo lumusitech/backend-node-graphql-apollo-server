@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose'
-import { uniqueValidator } from 'mongoose-unique-validator'
 
 const schema = new Schema({
   name: {
@@ -11,7 +10,7 @@ const schema = new Schema({
   },
   phone: {
     type: String,
-    minlength: 10,
+    minlength: 5,
   },
   street: {
     type: String,
@@ -25,19 +24,4 @@ const schema = new Schema({
   },
 })
 
-// better error messages for unique validation
-schema.plugin(uniqueValidator)
-
 export default model('Person', schema)
-
-// type Person {
-//     name: String!
-//     phone: String
-//     id: ID!
-//     address: Address!
-// }
-
-// type Address {
-//     street: String!
-//     city: String!
-// }

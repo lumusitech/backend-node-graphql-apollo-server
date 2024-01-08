@@ -1,30 +1,6 @@
 import { ApolloServer, UserInputError, gql } from 'apollo-server'
-import { v4 as uuidv4 } from 'uuid'
+import Person from './models/person.js'
 import './db.js'
-
-export const persons = [
-  {
-    name: 'John Doe',
-    phone: '123-456-7890',
-    street: '123 Main St',
-    city: 'New York',
-    id: 1,
-  },
-  {
-    name: 'Jane Smith',
-    phone: '987-654-3210',
-    street: '456 Elm St',
-    city: 'San Francisco',
-    id: 2,
-  },
-  {
-    name: 'Mike Johnson',
-    phone: '555-123-4567',
-    street: '789 Oak St',
-    city: 'Chicago',
-    id: 3,
-  },
-]
 
 const typeDefs = gql`
   enum YesNo {
@@ -59,17 +35,14 @@ const typeDefs = gql`
 const resolvers = {
   // TODO: Implement resolvers using mongoose
   Query: {
-    personsCount: () => persons.length,
+    personsCount: async () => await Person.collections.countDocuments(),
+    // TODO: Implement filter by phone with mongoose
     allPersons: async (root, args) => {
-      if (!args.phone) {
-        return persons
-      }
+      if (!args.phone) return await Person.find({})
 
-      const byPhone = args.phone === 'YES' ? p => p.phone : p => !p.phone
-
-      return persons.filter(byPhone)
+      return Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
-    findPerson: async (root, args) => persons.find(person => person.name === args.name),
+    findPerson: async (root, args) => await Person.findOne({ name: args.name }),
   },
 
   Person: {
@@ -80,30 +53,22 @@ const resolvers = {
   },
 
   Mutation: {
-    addPerson: (root, args) => {
-      if (persons.find(person => person.name === args.name)) {
-        throw new UserInputError('Name must be unique', {
+    addPerson: async (root, args) => {
+      const person = new Person({ ...args })
+      return await person.save()
+    },
+    editNumber: async (root, args) => {
+      try {
+        return await Person.findOneAndUpdate(
+          { name: args.name },
+          { phone: args.phone },
+          { new: true },
+        )
+      } catch (error) {
+        throw new UserInputError(error.message, {
           invalidArgs: args.name,
         })
       }
-      const person = {
-        ...args,
-        id: uuidv4(),
-      }
-      persons.push(person)
-      return person
-    },
-    editNumber: (root, args) => {
-      const personIndex = persons.findIndex(person => person.name === args.name)
-      if (personIndex === -1) return null
-
-      const person = persons[personIndex]
-
-      const updatedPerson = { ...person, phone: args.phone }
-
-      persons[personIndex] = updatedPerson
-
-      return updatedPerson
     },
   },
 }
