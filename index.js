@@ -1,9 +1,9 @@
-import { ApolloServer, UserInputError, gql } from 'apollo-server'
+import { ApolloServer, AuthenticationError, UserInputError, gql } from 'apollo-server'
+import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
+import './db.js'
 import Person from './models/person.js'
 import User from './models/user.js'
-import './db.js'
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 dotenv.config()
 
 const typeDefs = gql`
@@ -46,6 +46,7 @@ const typeDefs = gql`
     editNumber(name: String!, phone: String!): Person
     createUser(username: String!): User
     login(username: String!, password: String!): Token
+    addAsFriend(name: String!): User
   }
 `
 
@@ -76,9 +77,40 @@ const resolvers = {
   },
 
   Mutation: {
-    addPerson: async (root, args) => {
+    addPerson: async (root, args, context) => {
+      const { currentUser } = context
+
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
       const person = new Person({ ...args })
-      return await person.save()
+      try {
+        await person.save()
+        currentUser.friendList = currentUser.friendList.concat(person)
+        currentUser.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args.name,
+        })
+      }
+
+      return person
+    },
+    addAsFriend: async (root, args, { currentUser }) => {
+      if (!currentUser) throw new AuthenticationError('not authenticated')
+
+      const person = await Person.findOne({ name: args.name })
+      if (!person) throw new UserInputError('person not found')
+
+      const nonFriendlyAlready = currentUser.friendList.every(friend => friend.name !== person.name)
+
+      if (!nonFriendlyAlready) throw new UserInputError('person already added')
+
+      currentUser.friendList = currentUser.friendList.concat(person)
+      const updatedUser = await currentUser.save()
+
+      return updatedUser
     },
     editNumber: async (root, args) => {
       try {
