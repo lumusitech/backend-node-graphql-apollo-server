@@ -1,6 +1,6 @@
 # Grphql - Node - CRUD
 
-This is a simple example about graphql and apollo server with node and mongoose.
+This is a simple example about graphql and apollo server with node and mongoose. It has only play and learning purpose.
 
 NOTE: Refactor index.js using any architecture.
 
