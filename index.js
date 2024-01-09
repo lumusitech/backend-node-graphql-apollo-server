@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import './db.js'
 import Person from './models/person.js'
 import User from './models/user.js'
+import person from './models/person.js'
 dotenv.config()
 
 const typeDefs = gql`
@@ -53,8 +54,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    personsCount: async () => await Person.collections.countDocuments(),
-    personsLength: async () => await Person.collections.countDocuments(),
+    personsCount: async () => await Person.countDocuments(),
+    personsLength: async () => await Person.countDocuments(),
     allPersons: async (root, args) => {
       if (!args.phone) return await Person.find({})
 
