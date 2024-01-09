@@ -35,7 +35,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    personsCount: Int!
+    personsCount: Int! @deprecated(reason: "Use personsLength instead.")
+    personsLength: Int!
     allPersons(phone: YesNo): [Person]!
     findPerson(name: String!): Person
     me: User
@@ -51,10 +52,9 @@ const typeDefs = gql`
 `
 
 const resolvers = {
-  // TODO: Implement resolvers using mongoose
   Query: {
     personsCount: async () => await Person.collections.countDocuments(),
-    // TODO: Implement filter by phone with mongoose
+    personsLength: async () => await Person.collections.countDocuments(),
     allPersons: async (root, args) => {
       if (!args.phone) return await Person.find({})
 
